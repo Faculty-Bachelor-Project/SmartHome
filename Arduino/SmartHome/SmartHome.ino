@@ -9,21 +9,17 @@ void setup() {
 
 void BluetoothMethod()
 {
-      if(Serial.available() > 0)
-      {
-            incoming_value = Serial.read();
-            Serial.print(incoming_value);
-            Serial.print("\n");
-
-            if(incoming_value == '1')
-            {
-                digitalWrite(LED_BL, LOW);
-            }
-            else if(incoming_value == '0')
-            {
-                digitalWrite(LED_BL, HIGH);
-            }
-      }
+        if(Serial.available() > 0)
+        {
+              incoming_value = Serial.read();
+              switch(incoming_value)
+              {
+                case '0' : digitalWrite(LED_BL,HIGH);break;
+                case '1' : digitalWrite(LED_BL,LOW);break;
+              }
+              Serial.println(incoming_value);
+        }
+        delay(50);
 }
 
 void loop() {
