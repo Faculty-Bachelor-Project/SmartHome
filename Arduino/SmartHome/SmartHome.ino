@@ -47,12 +47,14 @@ void setup() {
 
 void SensorTSL()
 {
+    delay(ms);
     unsigned int visible, infrared;
   
     if (light.getData(visible,infrared))
     {
       Serial.print("Visible: ");
       Serial.print(visible);
+      Serial.print("\n");
 
       if(visible < 700)
       {
