@@ -6,7 +6,7 @@ SFE_TSL2561 light;
 
 // Global variables:
 boolean gain;     // Gain setting, 0 = X1, 1 = X16;
-unsigned int ms;  // Integration ("shutter") time in milliseconds
+unsigned int ms = 1500;  // Integration ("shutter") time in milliseconds
 
 char incoming_value = 0;
 int LED_BL = 12;
@@ -56,7 +56,7 @@ void SensorTSL()
       Serial.print(visible);
       Serial.print("\n");
 
-      if(visible < 700)
+      /*if(visible < 700)
       {
         analogWrite(LED_TSL, 0);
       }
@@ -67,7 +67,9 @@ void SensorTSL()
       else if(visible > 1500)
       {
         analogWrite(LED_TSL, 255);
-      }
+      }*/
+
+      analogWrite(LED_TSL, visible/3);
 
 
     }
@@ -113,6 +115,6 @@ void BluetoothMethod()
 
 void loop() {
   SensorTSL();
-  BluetoothMethod();
-  SensorPIR();
+  //BluetoothMethod();
+  //SensorPIR();
 }
