@@ -4,6 +4,7 @@ int LED_BL = 12;
 void setup() {
     Serial.begin(9600);
     pinMode(LED_BL,OUTPUT);
+    digitalWrite(LED_BL, HIGH);
 }
 
 void BluetoothMethod()
