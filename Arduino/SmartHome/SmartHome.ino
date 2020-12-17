@@ -1,6 +1,9 @@
+char incoming_value = 0;
+int LED_BL = 12;
+
 void setup() {
     Serial.begin(9600);
-    pinMode(13,OUTPUT);
+    pinMode(LED_BL,OUTPUT);
 }
 
 void BluetoothMethod()
@@ -13,11 +16,11 @@ void BluetoothMethod()
 
             if(incoming_value == '1')
             {
-                digitalWrite(13, LOW);
+                digitalWrite(LED_BL, LOW);
             }
             else if(incoming_value == '0')
             {
-                digitalWrite(13, HIGH);
+                digitalWrite(LED_BL, HIGH);
             }
       }
 }
