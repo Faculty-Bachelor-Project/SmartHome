@@ -47,14 +47,10 @@ void setup() {
 
 void SensorTSL()
 {
-     delay(ms);
-    // Retrieve the data from the device:
     unsigned int visible, infrared;
-    float vis,ir
   
     if (light.getData(visible,infrared))
     {
-      // getData() returned true, communication was successful
       Serial.print("Visible: ");
       Serial.print(visible);
 
@@ -75,9 +71,7 @@ void SensorTSL()
     }
     else
     {
-      // getData() returned false because of an I2C error, inform the user.
       byte error = light.getError();
-      Serial.print("I2C error: ");
       Serial.println(error);
     }
 }
