@@ -12,7 +12,7 @@ char incoming_value = 0;
 int LED_BL = 12;
 int LED_PIR = 11;
 int INP_PIR = 4;
-int LED_TSL = 11;
+int LED_TSL = 3;
 
 
 void setup() {
@@ -56,21 +56,7 @@ void SensorTSL()
       Serial.print(visible);
       Serial.print("\n");
 
-      /*if(visible < 700)
-      {
-        analogWrite(LED_TSL, 0);
-      }
-      else if(visible > 700 && visible < 1000)
-      {
-        analogWrite(LED_TSL, 126);
-      }
-      else if(visible > 1500)
-      {
-        analogWrite(LED_TSL, 255);
-      }*/
-
       analogWrite(LED_TSL, visible/3);
-
 
     }
     else
@@ -115,6 +101,6 @@ void BluetoothMethod()
 
 void loop() {
   SensorTSL();
-  //BluetoothMethod();
-  //SensorPIR();
+  BluetoothMethod();
+  SensorPIR();
 }
