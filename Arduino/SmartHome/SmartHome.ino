@@ -12,6 +12,7 @@ char incoming_value = 0;
 int LED_BL = 12;
 int LED_PIR = 11;
 int INP_PIR = 4;
+int LED_TSL = 11;
 
 
 void setup() {
@@ -21,6 +22,7 @@ void setup() {
     pinMode(INP_PIR, INPUT);
     digitalWrite(LED_BL, HIGH);
     digitalWrite(LED_PIR, HIGH);
+    analogWrite(LED_TSL, 255);
 
     light.begin();
 
@@ -55,12 +57,21 @@ void SensorTSL()
       // getData() returned true, communication was successful
       Serial.print("Visible: ");
       Serial.print(visible);
-      Serial.print(" Infrared: ");
-      Serial.print(infrared);
-      vis = float(visible);
-      ir = float(infrared);
-      Serial.print(" Ratio (Vis/IR): ");
-      Serial.println(vis/ir);
+
+      if(visible < 700)
+      {
+        analogWrite(LED_TSL, 0);
+      }
+      else if(visible > 700 && visible < 1000)
+      {
+        analogWrite(LED_TSL, 126);
+      }
+      else if(visible > 1500)
+      {
+        analogWrite(LED_TSL, 255);
+      }
+
+
     }
     else
     {
