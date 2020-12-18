@@ -1,5 +1,11 @@
 #include <SparkFunTSL2561.h>
 #include <Wire.h>
+#include <LiquidCrystal_I2C.h>
+#include <DHT.h>
+#define Type DHT11
+
+// Set the LCD address to 0x27 or 0x3f for a 16 chars and 2 line display
+LiquidCrystal_I2C lcd(0x27, 20, 4);
 
 // Create an SFE_TSL2561 object, here called "light":
 SFE_TSL2561 light;
@@ -13,9 +19,16 @@ int LED_BL = 12;
 int LED_PIR = 11;
 int INP_PIR = 4;
 int LED_TSL = 3;
+int DHT_PIN = 8;
+float humidity;
+float tempC;
+float tempF;
 
+DHT dht(DHT_PIN,Type);
 
 void setup() {
+    lcd.init();
+    lcd.backlight();
     Serial.begin(9600);
     pinMode(LED_BL,OUTPUT);
     pinMode(LED_PIR, OUTPUT);
@@ -24,6 +37,8 @@ void setup() {
     digitalWrite(LED_PIR, HIGH);
     analogWrite(LED_TSL, 255);
 
+    dht.begin();
+    delay(500);
     light.begin();
 
     // If gain = false (0), device is set to low gain (1X)
@@ -43,6 +58,25 @@ void setup() {
     // To start taking measurements, power up the sensor:
     light.setPowerUp();
 
+}
+
+void DHTSensor()
+{
+    humidity = dht.readHumidity();
+    tempC = dht.readTemperature();
+    tempF = dht.readTemperature(true);
+
+    lcd.clear();
+    lcd.setCursor(0,0);
+    lcd.print("TempC:");
+    lcd.print(tempC);
+    lcd.print(" C ");
+    lcd.setCursor(0,1);
+    lcd.print("Humidity:");
+    lcd.print(humidity);
+    lcd.print(" %");
+    delay(500);
+    
 }
 
 void SensorTSL()
@@ -103,4 +137,5 @@ void loop() {
   SensorTSL();
   BluetoothMethod();
   SensorPIR();
+  DHTSensor();
 }
