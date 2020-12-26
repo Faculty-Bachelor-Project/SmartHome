@@ -57,9 +57,13 @@ void setup() {
 void CoSensor()
 {
   int Value = analogRead(MQ7_analog_IN);
-  Serial.print("Analog read: ");
+  Serial.print("Monoxid value: ");
   Serial.println(Value);
-  digitalWrite(COOLER_PIN, HIGH);
+  
+  if(Value == 100)
+  {
+    digitalWrite(COOLER_PIN, HIGH);
+  }
   delay(1500);
 }
 
