@@ -12,6 +12,8 @@ boolean gain;
 unsigned int ms = 1500;
 
 char incoming_value = 0;
+int LED_B_BL = 6;
+int LED_G_BL = 5;
 int LED_BL = 12;
 int LED_PIR = 11;
 int INP_PIR = 4;
@@ -162,12 +164,41 @@ void BluetoothMethod()
 
             if(incoming_value == '1')
             {
+
                 digitalWrite(LED_BL, LOW);
+                delay(500);
+                digitalWrite(LED_BL, HIGH);
+                delay(500);
+                analogWrite(LED_B_BL, 0);
+                delay(500);
+                analogWrite(LED_B_BL, 255);
+                delay(500);
+                analogWrite(LED_G_BL, 0);
+                delay(500);
+                analogWrite(LED_G_BL, 255);
+                delay(500);
+//                digitalWrite(LED_BL, LOW);
+//                analogWrite(LED_B_BL, 0);
+//                delay(300);
+//                digitalWrite(LED_BL, HIGH);
+//                analogWrite(LED_B_BL, 255);
+//                delay(300);
+//                digitalWrite(LED_BL, LOW);
+//                analogWrite(LED_G_BL, 0);
+//                delay(300);
+//                digitalWrite(LED_BL, HIGH);
+//                analogWrite(LED_G_BL, 255);
+//                delay(300);
+
+            
             }
-            else if(incoming_value == '0')
+            if(incoming_value == '0')
             {
                 digitalWrite(LED_BL, HIGH);
+                analogWrite(LED_B_BL, 255);
+                analogWrite(LED_G_BL, 255);
             }
+            
       }
 }
 
