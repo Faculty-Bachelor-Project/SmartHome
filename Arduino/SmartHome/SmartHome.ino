@@ -4,15 +4,12 @@
 #include <DHT.h>
 #define Type DHT11
 
-// Set the LCD address to 0x27 or 0x3f for a 16 chars and 2 line display
 LiquidCrystal_I2C lcd(0x27, 20, 4);
 
-// Create an SFE_TSL2561 object, here called "light":
 SFE_TSL2561 light;
 
-// Global variables:
-boolean gain;     // Gain setting, 0 = X1, 1 = X16;
-unsigned int ms = 1500;  // Integration ("shutter") time in milliseconds
+boolean gain;
+unsigned int ms = 1500;
 
 char incoming_value = 0;
 int LED_BL = 12;
@@ -20,6 +17,8 @@ int LED_PIR = 11;
 int INP_PIR = 4;
 int LED_TSL = 3;
 int DHT_PIN = 8;
+int COOLER_PIN = 13;
+int MQ7_analog_IN = A0;
 float humidity;
 float tempC;
 float tempF;
@@ -33,6 +32,8 @@ void setup() {
     pinMode(LED_BL,OUTPUT);
     pinMode(LED_PIR, OUTPUT);
     pinMode(INP_PIR, INPUT);
+    pinMode(COOLER_PIN, OUTPUT);
+    pinMode(MQ7_analog_IN, INPUT);
     digitalWrite(LED_BL, HIGH);
     digitalWrite(LED_PIR, HIGH);
     analogWrite(LED_TSL, 255);
@@ -41,14 +42,7 @@ void setup() {
     delay(500);
     light.begin();
 
-    // If gain = false (0), device is set to low gain (1X)
-    // If gain = high (1), device is set to high gain (16X)
     gain = 1;
-
-    // If time = 0, integration will be 13.7ms
-    // If time = 1, integration will be 101ms
-    // If time = 2, integration will be 402ms
-    // If time = 3, use manual start / stop to perform your own integration
     unsigned char time = 2;
 
     // setTiming() will set the third parameter (ms) to the
@@ -58,6 +52,15 @@ void setup() {
     // To start taking measurements, power up the sensor:
     light.setPowerUp();
 
+}
+
+void CoSensor()
+{
+  int Value = analogRead(MQ7_analog_IN);
+  Serial.print("Analog read: ");
+  Serial.println(Value);
+  digitalWrite(COOLER_PIN, HIGH);
+  delay(1500);
 }
 
 void DHTSensor()
@@ -138,4 +141,5 @@ void loop() {
   BluetoothMethod();
   SensorPIR();
   DHTSensor();
+  CoSensor();
 }
