@@ -19,6 +19,7 @@ int LED_TSL = 3;
 int DHT_PIN = 8;
 int COOLER_PIN = 13;
 int MQ7_analog_IN = A0;
+int MQ2_analog_IN = A1;
 float humidity;
 float tempC;
 float tempF;
@@ -34,6 +35,7 @@ void setup() {
     pinMode(INP_PIR, INPUT);
     pinMode(COOLER_PIN, OUTPUT);
     pinMode(MQ7_analog_IN, INPUT);
+    pinMode(MQ2_analog_IN, INPUT);
     digitalWrite(LED_BL, HIGH);
     digitalWrite(LED_PIR, HIGH);
     analogWrite(LED_TSL, 255);
@@ -60,11 +62,33 @@ void CoSensor()
   Serial.print("Monoxid value: ");
   Serial.println(Value);
   
-  if(Value == 100)
+  if(Value >= 100)
   {
     digitalWrite(COOLER_PIN, HIGH);
   }
-  delay(1500);
+  else
+  {
+    digitalWrite(COOLER_PIN, LOW);
+  }
+}
+//  delay(1500);
+
+
+void GazSensor()
+{
+  int Value = analogRead(MQ2_analog_IN);
+  Serial.print("Gsz value: ");
+  Serial.println(Value);
+  
+  if(Value >= 170)
+  {
+    digitalWrite(COOLER_PIN, HIGH);
+  }
+  else
+  {
+    digitalWrite(COOLER_PIN, LOW);
+  }
+ // delay(1500);
 }
 
 void DHTSensor()
@@ -82,13 +106,13 @@ void DHTSensor()
     lcd.print("Humidity:");
     lcd.print(humidity);
     lcd.print(" %");
-    delay(500);
+  //  delay(500);
     
 }
 
 void SensorTSL()
 {
-    delay(ms);
+  //  delay(ms);
     unsigned int visible, infrared;
   
     if (light.getData(visible,infrared))
@@ -96,8 +120,15 @@ void SensorTSL()
       Serial.print("Visible: ");
       Serial.print(visible);
       Serial.print("\n");
-
+      
+      if (visible > 20000)
+      {
+      analogWrite(LED_TSL, 255);
+      }
+      else
+      {
       analogWrite(LED_TSL, visible/3);
+      }
 
     }
     else
@@ -112,12 +143,12 @@ void SensorPIR(){
    {
     Serial.println("Motion Detected");
       digitalWrite(LED_PIR,LOW);
-      delay(2000);
+     // delay(2000);
    }
   else{
     Serial.println("Motion not detected");
       digitalWrite(LED_PIR,HIGH);
-      delay(2000);
+     // delay(2000);
   }
 }
 
@@ -146,4 +177,8 @@ void loop() {
   SensorPIR();
   DHTSensor();
   CoSensor();
+  GazSensor();
+
+  Serial.print("\n");
+  delay(1500);
 }
