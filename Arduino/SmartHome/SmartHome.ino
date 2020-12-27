@@ -11,14 +11,14 @@ SFE_TSL2561 light;
 boolean gain;
 unsigned int ms = 1500;
 
-char lcd_value = 0;
-char incoming_value = 0;
 int LED_B_BL = 6;
 int LED_G_BL = 5;
 int LED_BL = 12;
 int LED_PIR = 11;
 int INP_PIR = 4;
 int LED_TSL = 3;
+int LED_B_TSL = 10;
+int LED_G_TSL = 9;
 int DHT_PIN = 8;
 int COOLER_PIN = 13;
 int MQ7_analog_IN = A0;
@@ -34,9 +34,9 @@ void setup() {
     lcd.backlight();
     lcd.clear();
     lcd.setCursor(0,0);
-    lcd.print("Which sensor do you");
-    lcd.setCursor(6,1);
-    lcd.print("want to use?");
+    lcd.print("Which sensor do");
+    lcd.setCursor(0,1);
+    lcd.print("you want to use?");
     Serial.begin(9600);
     pinMode(LED_BL,OUTPUT);
     pinMode(LED_PIR, OUTPUT);
@@ -69,8 +69,7 @@ void MonoxideSensorPrint()
   int Value = analogRead(MQ7_analog_IN);
   lcd.clear();
   lcd.setCursor(0,0);
-  lcd.print("CO value:");
-  lcd.setCursor(6,1);
+  lcd.print("CO value:   ");
   lcd.print(Value);
   //delay(1500);   
 }
@@ -80,8 +79,7 @@ void GasSensorPrint()
   int Value = analogRead(MQ2_analog_IN);
   lcd.clear();
   lcd.setCursor(0,0);
-  lcd.print("Gas value:");
-  lcd.setCursor(6,1);
+  lcd.print("Gas value:  ");
   lcd.print(Value);
   //delay(1500);   
 }
@@ -154,10 +152,17 @@ void SensorTSL()
       if (visible > 20000)
       {
       analogWrite(LED_TSL, 255);
+      analogWrite(LED_B_TSL, 255);
+      analogWrite(LED_G_TSL, 255);
       }
       else
       {
       analogWrite(LED_TSL, visible/3);
+      delay(500);
+      analogWrite(LED_B_TSL, visible/3);
+      delay(500);
+      analogWrite(LED_G_TSL, visible/3);
+      delay(500);
       }
 
     }
@@ -186,50 +191,11 @@ void BluetoothMethod()
 {
       if(Serial.available() > 0)
       {
-            lcd_value = Serial.read();
-            incoming_value = Serial.read();
+            char incoming_value = Serial.read();
             Serial.print(incoming_value);
             Serial.print("\n");
 
-            if(incoming_value == '1')
-            {
-
-                digitalWrite(LED_BL, LOW);
-                delay(500);
-                digitalWrite(LED_BL, HIGH);
-                delay(500);
-                analogWrite(LED_B_BL, 0);
-                delay(500);
-                analogWrite(LED_B_BL, 255);
-                delay(500);
-                analogWrite(LED_G_BL, 0);
-                delay(500);
-                analogWrite(LED_G_BL, 255);
-                delay(500);
-//                digitalWrite(LED_BL, LOW);
-//                analogWrite(LED_B_BL, 0);
-//                delay(300);
-//                digitalWrite(LED_BL, HIGH);
-//                analogWrite(LED_B_BL, 255);
-//                delay(300);
-//                digitalWrite(LED_BL, LOW);
-//                analogWrite(LED_G_BL, 0);
-//                delay(300);
-//                digitalWrite(LED_BL, HIGH);
-//                analogWrite(LED_G_BL, 255);
-//                delay(300);
-
-            
-            }
-            if(incoming_value == '0')
-            {
-                digitalWrite(LED_BL, HIGH);
-                analogWrite(LED_B_BL, 255);
-                analogWrite(LED_G_BL, 255);
-            }
-
-
-            switch(lcd_value)
+            switch(incoming_value)
             {
               case 'a':
                 DHTSensor();
@@ -244,7 +210,46 @@ void BluetoothMethod()
                 DHTSensor();
                 break;
             }
-            
+
+            switch (incoming_value)
+            {
+            case '1':
+               digitalWrite(LED_BL, LOW);
+               delay(500);
+               digitalWrite(LED_BL, HIGH);
+               delay(500);
+               analogWrite(LED_B_BL, 0);
+               delay(500);
+               analogWrite(LED_B_BL, 255);
+               delay(500);
+               analogWrite(LED_G_BL, 0);
+               delay(500);
+               analogWrite(LED_G_BL, 255);
+               delay(500);
+               digitalWrite(LED_BL, LOW);
+               analogWrite(LED_B_BL, 0);
+               delay(500);
+               digitalWrite(LED_BL, HIGH);
+               analogWrite(LED_B_BL, 255);
+               delay(500);
+               digitalWrite(LED_BL, LOW);
+               analogWrite(LED_G_BL, 0);
+               delay(500);
+               digitalWrite(LED_BL, HIGH);
+               analogWrite(LED_G_BL, 255);
+               delay(500);
+               break;
+            case '0':
+                digitalWrite(LED_BL, HIGH);
+                analogWrite(LED_B_BL, 255);
+                analogWrite(LED_G_BL, 255);
+                break;
+            default:
+                digitalWrite(LED_BL, HIGH);
+                analogWrite(LED_B_BL, 255);
+                analogWrite(LED_G_BL, 255);
+                break;  
+           }
       }
 }
 
@@ -252,7 +257,6 @@ void loop() {
   SensorTSL();
   BluetoothMethod();
   SensorPIR();
-  //DHTSensor();
   CoSensor();
   GazSensor();
 
