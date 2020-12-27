@@ -11,6 +11,7 @@ SFE_TSL2561 light;
 boolean gain;
 unsigned int ms = 1500;
 
+char lcd_value = 0;
 char incoming_value = 0;
 int LED_B_BL = 6;
 int LED_G_BL = 5;
@@ -31,6 +32,11 @@ DHT dht(DHT_PIN,Type);
 void setup() {
     lcd.init();
     lcd.backlight();
+    lcd.clear();
+    lcd.setCursor(0,0);
+    lcd.print("Which sensor do you");
+    lcd.setCursor(6,1);
+    lcd.print("want to use?");
     Serial.begin(9600);
     pinMode(LED_BL,OUTPUT);
     pinMode(LED_PIR, OUTPUT);
@@ -56,6 +62,28 @@ void setup() {
     // To start taking measurements, power up the sensor:
     light.setPowerUp();
 
+}
+
+void MonoxideSensorPrint()
+{
+  int Value = analogRead(MQ7_analog_IN);
+  lcd.clear();
+  lcd.setCursor(0,0);
+  lcd.print("CO value:");
+  lcd.setCursor(6,1);
+  lcd.print(Value);
+  //delay(1500);   
+}
+
+void GasSensorPrint()
+{
+  int Value = analogRead(MQ2_analog_IN);
+  lcd.clear();
+  lcd.setCursor(0,0);
+  lcd.print("Gas value:");
+  lcd.setCursor(6,1);
+  lcd.print(Value);
+  //delay(1500);   
 }
 
 void CoSensor()
@@ -158,6 +186,7 @@ void BluetoothMethod()
 {
       if(Serial.available() > 0)
       {
+            lcd_value = Serial.read();
             incoming_value = Serial.read();
             Serial.print(incoming_value);
             Serial.print("\n");
@@ -198,6 +227,23 @@ void BluetoothMethod()
                 analogWrite(LED_B_BL, 255);
                 analogWrite(LED_G_BL, 255);
             }
+
+
+            switch(lcd_value)
+            {
+              case 'a':
+                DHTSensor();
+                break;
+              case 'b':
+                GasSensorPrint();
+                break;
+              case 'c':
+                MonoxideSensorPrint();
+                break;
+              default:
+                DHTSensor();
+                break;
+            }
             
       }
 }
@@ -206,7 +252,7 @@ void loop() {
   SensorTSL();
   BluetoothMethod();
   SensorPIR();
-  DHTSensor();
+  //DHTSensor();
   CoSensor();
   GazSensor();
 
