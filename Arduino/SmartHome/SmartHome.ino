@@ -11,6 +11,7 @@ SFE_TSL2561 light;
 boolean gain;
 unsigned int ms = 1500;
 
+volatile int state = 0;
 int LED_B_BL = 6;
 int LED_G_BL = 5;
 int LED_BL = 12;
@@ -158,11 +159,11 @@ void SensorTSL()
       else
       {
       analogWrite(LED_TSL, visible/3);
-      delay(500);
+      delay(50);
       analogWrite(LED_B_TSL, visible/3);
-      delay(500);
+      delay(50);
       analogWrite(LED_G_TSL, visible/3);
-      delay(500);
+      delay(50);
       }
 
     }
@@ -187,11 +188,62 @@ void SensorPIR(){
   }
 }
 
+void light_color()
+{
+  Serial.print("State1: ");
+  Serial.println(state);
+  if(state == true)
+            {
+               digitalWrite(LED_BL, LOW);
+               delay(50);
+               digitalWrite(LED_BL, HIGH);
+               delay(50);
+               analogWrite(LED_B_BL, 0);
+               delay(50);
+               analogWrite(LED_B_BL, 255);
+               delay(50);
+               analogWrite(LED_G_BL, 0);
+               delay(50);
+               analogWrite(LED_G_BL, 255);
+               delay(50);
+               digitalWrite(LED_BL, LOW);
+               analogWrite(LED_B_BL, 0);
+               delay(50);
+               digitalWrite(LED_BL, HIGH);
+               analogWrite(LED_B_BL, 255);
+               delay(50);
+               digitalWrite(LED_BL, LOW);
+               analogWrite(LED_G_BL, 0);
+               delay(50);
+               digitalWrite(LED_BL, HIGH);
+               analogWrite(LED_G_BL, 255);
+               delay(50);
+            }
+            else 
+            {
+                digitalWrite(LED_BL, HIGH);
+                analogWrite(LED_B_BL, 255);
+                analogWrite(LED_G_BL, 255);
+            }
+}
+
 void BluetoothMethod()
 {
       if(Serial.available() > 0)
       {
             char incoming_value = Serial.read();
+            Serial.print("State2: ");
+            Serial.println(state);
+            if (incoming_value == '1')
+                {
+                  state = 1;
+                }
+            else if (incoming_value == '0')
+                {
+                  state = 0;
+                }
+            Serial.print("State3: ");
+            Serial.println(state);    
             Serial.print(incoming_value);
             Serial.print("\n");
 
@@ -210,46 +262,6 @@ void BluetoothMethod()
                 DHTSensor();
                 break;
             }
-
-            switch (incoming_value)
-            {
-            case '1':
-               digitalWrite(LED_BL, LOW);
-               delay(500);
-               digitalWrite(LED_BL, HIGH);
-               delay(500);
-               analogWrite(LED_B_BL, 0);
-               delay(500);
-               analogWrite(LED_B_BL, 255);
-               delay(500);
-               analogWrite(LED_G_BL, 0);
-               delay(500);
-               analogWrite(LED_G_BL, 255);
-               delay(500);
-               digitalWrite(LED_BL, LOW);
-               analogWrite(LED_B_BL, 0);
-               delay(500);
-               digitalWrite(LED_BL, HIGH);
-               analogWrite(LED_B_BL, 255);
-               delay(500);
-               digitalWrite(LED_BL, LOW);
-               analogWrite(LED_G_BL, 0);
-               delay(500);
-               digitalWrite(LED_BL, HIGH);
-               analogWrite(LED_G_BL, 255);
-               delay(500);
-               break;
-            case '0':
-                digitalWrite(LED_BL, HIGH);
-                analogWrite(LED_B_BL, 255);
-                analogWrite(LED_G_BL, 255);
-                break;
-            default:
-                digitalWrite(LED_BL, HIGH);
-                analogWrite(LED_B_BL, 255);
-                analogWrite(LED_G_BL, 255);
-                break;  
-           }
       }
 }
 
@@ -259,7 +271,8 @@ void loop() {
   SensorPIR();
   CoSensor();
   GazSensor();
-
+  light_color();
+  
   Serial.print("\n");
-  delay(1500);
+  //delay(1500);
 }
