@@ -55,12 +55,7 @@ void setup() {
 
     gain = 1;
     unsigned char time = 2;
-
-    // setTiming() will set the third parameter (ms) to the
-    // requested integration time in ms (this will be useful later):
     light.setTiming(gain,time,ms);
-
-    // To start taking measurements, power up the sensor:
     light.setPowerUp();
 
 }
@@ -71,8 +66,7 @@ void MonoxideSensorPrint()
   lcd.clear();
   lcd.setCursor(0,0);
   lcd.print("CO value:   ");
-  lcd.print(Value);
-  //delay(1500);   
+  lcd.print(Value);   
 }
 
 void GasSensorPrint()
@@ -81,8 +75,7 @@ void GasSensorPrint()
   lcd.clear();
   lcd.setCursor(0,0);
   lcd.print("Gas value:  ");
-  lcd.print(Value);
-  //delay(1500);   
+  lcd.print(Value);   
 }
 
 void CoSensor()
@@ -117,7 +110,6 @@ void GazSensor()
   {
     digitalWrite(COOLER_PIN, LOW);
   }
- // delay(1500);
 }
 
 void DHTSensor()
@@ -135,7 +127,6 @@ void DHTSensor()
     lcd.print("Humidity:");
     lcd.print(humidity);
     lcd.print(" %");
-  //  delay(500);
     
 }
 
@@ -179,12 +170,10 @@ void SensorPIR(){
    {
     Serial.println("Motion Detected");
       digitalWrite(LED_PIR,LOW);
-     // delay(2000);
    }
   else{
     Serial.println("Motion not detected");
       digitalWrite(LED_PIR,HIGH);
-     // delay(2000);
   }
 }
 
@@ -217,6 +206,14 @@ void light_color()
                delay(50);
                digitalWrite(LED_BL, HIGH);
                analogWrite(LED_G_BL, 255);
+               delay(50);
+               digitalWrite(LED_BL, LOW);
+               analogWrite(LED_G_BL, 0);
+               analogWrite(LED_B_BL, 0);
+               delay(50);
+               digitalWrite(LED_BL, HIGH);
+               analogWrite(LED_G_BL, 255);
+               analogWrite(LED_B_BL, 255);
                delay(50);
             }
             else 
@@ -274,5 +271,5 @@ void loop() {
   light_color();
   
   Serial.print("\n");
-  //delay(1500);
+  
 }
